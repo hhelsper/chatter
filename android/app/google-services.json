@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "586068984734",
+    "project_id": "chatter-1eebb",
+    "storage_bucket": "chatter-1eebb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586068984734:android:b922c5b23e4bb34c7ccc8f",
+        "android_client_info": {
+          "package_name": "com.fredrikbogg.tinder_app_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586068984734-co2arkv3ugbjl5l2k7ir3nmnbhnvu7e7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnA5LI_MnMSky1Ju9LdIYAUodweLAijzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586068984734-co2arkv3ugbjl5l2k7ir3nmnbhnvu7e7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
