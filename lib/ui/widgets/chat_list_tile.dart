@@ -75,13 +75,29 @@ class ChatListTile extends StatelessWidget {
           ),
         ),
         Container(
-            child: Text(
-                chatWithUser.chat.lastMessage == null
-                    ? ''
-                    : convertEpochMsToDateTime(
-                        chatWithUser.chat.lastMessage!.epochTimeMs),
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12))),
+            child: Wrap(
+              direction: Axis.horizontal,
+              children: <Widget> [
+                Container(
+                  width: 13,
+                  height: 13,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: chatWithUser.user.isOnline ? Colors.green.shade500 : Colors.grey.shade800,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                    chatWithUser.chat.lastMessage == null
+                        ? ''
+                        : convertEpochMsToDateTime(
+                            chatWithUser.chat.lastMessage!.epochTimeMs),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12)),
+
+
+              ],
+            )),
       ],
     );
   }

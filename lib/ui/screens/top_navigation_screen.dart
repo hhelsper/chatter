@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinder_app_flutter/data/model/top_navigation_item.dart';
+import 'package:tinder_app_flutter/ui/screens/convo_screen.dart';
 import 'package:tinder_app_flutter/ui/screens/top_navigation_screens/profile_screen.dart';
 import 'top_navigation_screens/chats_screen.dart';
 import 'top_navigation_screens/match_screen.dart';
@@ -12,7 +13,8 @@ class TopNavigationScreen extends StatelessWidget {
       iconData: Icons.person,
     ),
     TopNavigationItem(
-      screen: MatchScreen(),
+      // screen: MatchScreen(),
+      screen: ConvoScreen(),
       iconData: Icons.favorite,
     ),
     TopNavigationItem(

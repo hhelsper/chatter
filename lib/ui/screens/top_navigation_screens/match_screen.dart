@@ -45,6 +45,7 @@ class _MatchScreenState extends State<MatchScreen> {
     print(res.toString());
     if (res.docs.length > 0) {
       var userToMatchWith = AppUser.fromSnapshot(res.docs.first);
+
       return userToMatchWith;
     } else {
       return null;
@@ -104,7 +105,7 @@ class _MatchScreenState extends State<MatchScreen> {
                       ? FutureBuilder<AppUser?>(
                           future: loadPerson(userSnapshot.data?.id),
                           builder: (context, snapshot) {
-                            print("snapshot ${snapshot.toString()}" );
+
                             if (snapshot.connectionState ==
                                     ConnectionState.done &&
                                 !snapshot.hasData) {

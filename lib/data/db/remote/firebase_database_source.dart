@@ -60,6 +60,7 @@ class FirebaseDatabaseSource {
   }
 
   Future<DocumentSnapshot> getUser(String userId) {
+    print("get user");
     return instance.collection('users').doc(userId).get();
   }
 
@@ -104,6 +105,23 @@ class FirebaseDatabaseSource {
     return gender;
   }
 
+  Future<List<String>> getInterests(String userId) async {
+    print('get interests');
+    print(userId);
+    List<String> interests = [];
+    var docSnapshot = await instance.collection('users').doc(userId).get();
+    if (docSnapshot.exists) {
+      print('shit');
+      AppUser user = AppUser.fromSnapshot(docSnapshot);
+      Map<String, dynamic> data = docSnapshot.data()!;
+
+      // You can then retrieve the value from the Map like this:
+      interests = user.interests;
+      print(interests.toString());
+    }
+    return interests;
+  }
+
   Future<QuerySnapshot> getPersonsToMatchWith(
       List<String> ignoreIds, String gender, String preference) {
     print(gender + preference);
@@ -136,6 +154,44 @@ class FirebaseDatabaseSource {
             .where('preference', isEqualTo: 'female')
             .get();
       }
+
+  }
+
+  Future<QuerySnapshot> getPeopleToMatchWith(
+      List<String> ignoreIds, String gender, String preference, List<String> interests) {
+    print(gender + preference);
+    print('made it');
+    if(gender == 'male' && preference == 'male'){
+      print("male looking for males");
+
+      return instance
+          .collection('users')
+          .where('id', whereNotIn: ignoreIds).where('gender', isEqualTo: 'male')
+          .where('preference', isEqualTo: 'male')
+          .get();
+    } else if(gender == 'male' && preference == 'female'){
+      print('male looking for females');
+
+      return instance
+          .collection('users')
+          .where('id', whereNotIn: ignoreIds).where('gender', isEqualTo: 'female')
+          .where('preference', isEqualTo: 'male')
+          .get();
+    } else if(gender == 'female' && preference == 'female'){
+      print("female looking for females");
+      return instance
+          .collection('users')
+          .where('id', whereNotIn: ignoreIds).where('gender', isEqualTo: 'female')
+          .where('preference', isEqualTo: 'female')
+          .get();
+    } else {
+      print('female looking for males');
+      return instance
+          .collection('users')
+          .where('id', whereNotIn: ignoreIds).where('gender', isEqualTo: 'male')
+          .where('preference', isEqualTo: 'female')
+          .get();
+    }
 
   }
 
