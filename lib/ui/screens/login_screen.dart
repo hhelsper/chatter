@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response is Success<UserCredential>) {
         Provider.of<UserProvider>(context, listen: false).currentUserId =
             response.value.user!.uid;
+        FirebaseFirestore.instance.collection('users').doc(response.value.user!.uid).update(
+            {'isOnline': true});
         Navigator.of(context)
             .pushNamedAndRemoveUntil(TopNavigationScreen.id, (route) => false);
       }

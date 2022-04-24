@@ -54,9 +54,12 @@ class UserProvider extends ChangeNotifier {
             age: userRegistration.age,
             profilePhotoPath: profilePhotoUrl,
             interests: userRegistration.interests,
+            country: userRegistration.country,
+            state: userRegistration.state,
             city: userRegistration.city,
             gender: userRegistration.gender,
             preference: userRegistration.preference,
+            isOnline: true,
 
         );
         _databaseSource.addUser(user);
@@ -115,6 +118,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> logoutUser() async {
     _user = null;
+
     await SharedPreferencesUtil.removeUserId();
   }
 

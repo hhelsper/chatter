@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:tinder_app_flutter/data/db/entity/app_user.dart';
 import 'package:tinder_app_flutter/ui/widgets/rounded_icon_button.dart';
@@ -24,8 +26,9 @@ class _SwipeCardState extends State<SwipeCard> {
           width: MediaQuery.of(context).size.width * 0.85,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(25.0),
-            child:
-                Image.network(widget.person.profilePhotoPath, fit: BoxFit.fill),
+            child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                child: Image.network(widget.person.profilePhotoPath, fit: BoxFit.fill),),
           ),
         ),
         Positioned(

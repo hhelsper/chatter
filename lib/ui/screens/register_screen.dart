@@ -108,7 +108,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       case 7:
         return Location(
-            onChanged: (value) => {_userRegistration.city = value}
+            onChanged: (value) {
+              _userRegistration.city = value['city'];
+              _userRegistration.state = value['state'];
+              _userRegistration.country = value['country'];
+            }
         );
       default:
         return Container();
@@ -123,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return (_userRegistration.age >= 18 && _userRegistration.age <= 120);
       case 2:
         return _userRegistration.localProfilePhotoPath.isNotEmpty;
-        //TODO: case 3:  return _userRegistration.intersts.length > 0
+
       case 3:
         return (_userRegistration.interests.length > 0);
       case 4:
@@ -132,7 +136,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return (_userRegistration.gender.length > 1);
       case 6:
         return(_userRegistration.preference.length > 1);
-
+      case 7:
+        return (_userRegistration.city.isNotEmpty);
       default:
         return false;
     }
@@ -149,9 +154,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return "Invalid photo";
       case 3:
         return "Must choose interests";
-        //TODO: case 3: return "Must choose interests";
       case 4:
         return "password must be at least 6 characters";
+      case 5:
+        return "must choose a gender";
+      case 6:
+        return 'must choose a preference';
+      case 7:
+        return 'must choose a location';
       default:
         return "";
     }

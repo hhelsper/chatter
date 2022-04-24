@@ -19,6 +19,8 @@ class StartScreen extends StatelessWidget {
             margin: EdgeInsets.only(bottom: 40, top: 120),
             child: Column(
               children: [
+                SizedBox(height: 20,),
+                SizedBox(height: 30,),
                 AppIconTitle(),
                 Expanded(child: Container()),
                 Container(

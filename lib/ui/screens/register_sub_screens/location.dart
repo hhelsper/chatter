@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 
 class Location extends StatefulWidget {
-  final Function(String) onChanged;
+  final Function(Map) onChanged;
 
-  Location({required this.onChanged});
+  Location({required this.onChanged, Key? key}): super(key: key);
 
   @override
   _LocationState createState() => _LocationState();
@@ -14,13 +14,13 @@ class Location extends StatefulWidget {
 class _LocationState extends State<Location> {
 
   // late final Function(num) onChanged;
-  String city = "atlanta";
+
   String countryValue = "";
   String stateValue = "";
   String cityValue = "";
-  String address = "";
 
-  void setCity(String? value){
+
+  void setCity(Map? value){
     widget.onChanged(value!);
   }
 
@@ -50,11 +50,11 @@ class _LocationState extends State<Location> {
               ///Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER] (USE with disabledDropdownDecoration)
               // dropdownDecoration: BoxDecoration(
               //     borderRadius: BorderRadius.all(Radius.circular(10)),
-              //     color: Colors.white,
+              //     color: Colors.black,
               //     border:
               //     Border.all(color: Colors.grey.shade300, width: 1)),
-              //
-              // ///Disabled Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]  (USE with disabled dropdownDecoration)
+
+              ///Disabled Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]  (USE with disabled dropdownDecoration)
               // disabledDropdownDecoration: BoxDecoration(
               //     borderRadius: BorderRadius.all(Radius.circular(10)),
               //     color: Colors.grey.shade300,
@@ -75,31 +75,32 @@ class _LocationState extends State<Location> {
 
 
               ///Disable country dropdown (Note: use it with default country)
+              defaultCountry: DefaultCountry.United_States,
 
+              ///selected item style [OPTIONAL PARAMETER]
+              selectedItemStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
 
-              // ///selected item style [OPTIONAL PARAMETER]
-              // selectedItemStyle: TextStyle(
-              //   color: Colors.black,
-              //   fontSize: 14,
-              // ),
-              //
-              // ///DropdownDialog Heading style [OPTIONAL PARAMETER]
-              // dropdownHeadingStyle: TextStyle(
-              //     color: Colors.black,
-              //     fontSize: 17,
-              //     fontWeight: FontWeight.bold),
-              //
-              // ///DropdownDialog Item style [OPTIONAL PARAMETER]
-              // dropdownItemStyle: TextStyle(
-              //   color: Colors.black,
-              //   fontSize: 14,
-              // ),
+              ///DropdownDialog Heading style [OPTIONAL PARAMETER]
+              dropdownHeadingStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold),
+
+              ///DropdownDialog Item style [OPTIONAL PARAMETER]
+              dropdownItemStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
 
               ///Dialog box radius [OPTIONAL PARAMETER]
               dropdownDialogRadius: 10.0,
 
               ///Search bar radius [OPTIONAL PARAMETER]
               searchBarRadius: 10.0,
+
 
               ///triggers once country selected in dropdown
               onCountryChanged: (value) {
@@ -112,14 +113,25 @@ class _LocationState extends State<Location> {
               ///triggers once state selected in dropdown
               onStateChanged: (value) {
                 setState(() {
+                  if (value != null){
+                    stateValue = value;
+                  }
                   ///store value in state variable
-                  stateValue = value!;
+
                 });
               },
 
               ///triggers once city selected in dropdown
               onCityChanged: (value) {
-                setCity(value);
+                 setState(() {
+                   if(value != null){
+                     var map = {'country': countryValue, 'state': stateValue, 'city': value};
+                     setCity(map);
+                     cityValue = value;
+                   }
+
+                 });
+
               },
             ),
 
