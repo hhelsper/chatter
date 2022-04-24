@@ -61,7 +61,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       {'isOnline': false});
                                   logoutPressed(userProvider, context);
                                 })
-                          ])
+                          ]
+                    )
                         : Container());
               });
         }),

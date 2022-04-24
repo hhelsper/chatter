@@ -28,6 +28,7 @@ dependencies:
   intl: ^0.17.0
   csc_picker: ^0.2.6
   collection: ^1.15.0
+  blur: ^3.1.0
 
 dev_dependencies:
   flutter_test:

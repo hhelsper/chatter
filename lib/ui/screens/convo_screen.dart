@@ -1,5 +1,6 @@
 
 import 'dart:collection';
+import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,13 +12,21 @@ import '../../data/db/entity/app_user.dart';
 import '../../data/db/entity/swipe.dart';
 import '../../data/db/remote/firebase_database_source.dart';
 import '../../util/constants.dart';
+import '../widgets/rounded_button.dart';
+import '../widgets/rounded_icon_button.dart';
 
 class ConvoScreen extends StatefulWidget {
-  const ConvoScreen({Key? key}) : super(key: key);
+  ConvoScreen({Key? key}) : super(key: key);
+
+  final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
+
+
 
   @override
   _ConvoScreenState createState() => _ConvoScreenState();
 }
+
+
 
 
 
@@ -29,78 +38,168 @@ class _ConvoScreenState extends State<ConvoScreen> {
   late String preference;
   late String gender;
   late List<String> interests;
+  late AppUser me;
 
-  List<Container> buildUserList(AsyncSnapshot<List<AppUser>?> users){
-    List<Container> cards = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    String currentId = Provider
+        .of<UserProvider>(context, listen: false)
+        .currentUserId;
+      getMe(currentId);
+  }
+
+  void getMe(String currentId) async {
+    DocumentSnapshot snap = await _databaseSource.getUser(currentId);
+    me = AppUser.fromSnapshot(snap);
+  }
+
+  List<SizedBox> buildUserList(AsyncSnapshot<List<AppUser>?> users) {
+    List<SizedBox> cards = [];
+
+
 
     users.data?.forEach((element) {
-      print("hello" + element.name);
-      Container card = Container(
-        height: 130,
-          child:Card(
-            color: Colors.black12,
-            elevation: 10,
 
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(36.0),
-          side: BorderSide(color: kAccentColor, width: 1),
+      List<String> similarInterests = [];
+      element.interests.forEach((interest) {
+        if(me.interests.contains(interest)){
+          similarInterests.add(interest);
+        }
+      });
 
+      print(element.interests);
+      print(element.profilePhotoPath);
+      Size size = MediaQuery.of(context).size;
+      SizedBox card = SizedBox(
+          height: size.height,
+          width: size.width,
+      child: Scaffold(
+          body: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: 42.0,
+          horizontal: 18.0,
         ),
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            debugPrint('Card tapped.');
-          },
-          child: Column(
-            children: <Widget>[
-              Text(element.name, style: TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-              ),
-              ),
+        child: Column(children: [
+            Stack(
+            children: [
+            Container(
+              height: 200,
+            width: 200,
+            child: ClipRRect(
 
+              borderRadius: BorderRadius.circular(100.0),
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Image.network(element.profilePhotoPath, fit: BoxFit.fill),),
+            ),
+          ),
+            ]
+            ),
+          SizedBox(height: 20),
+          Text(
+              '${element.name}, ${element.age}',
+              style: Theme.of(context).textTheme.headline4),
+          SizedBox(height: 40),
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Bio', style: Theme.of(context).textTheme.headline4),
+                ],
+              ),
+              SizedBox(height: 5),
+              Text(
+                element.bio.length != 0 ? element.bio : "No bio.",
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              ],
+          ),
               Expanded(
-                child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 10,
-                      mainAxisExtent: 67,
-
-
-                    ),
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    itemCount: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                SizedBox(
+                  height: 10,
+                ),
+                Text( similarInterests.length != 0 ?
+                  'Similar Interests' : 'No Similar Interests',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  ),
+                    itemCount: similarInterests.length,
                     shrinkWrap: true,
                     itemBuilder: (BuildContext ctx, index) {
 
                       return Center(
                         child: Container(
-                            alignment: Alignment.center,
-                            child: Text(element.interests[index]),
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                border: Border.all(
-                                  color: Colors.amber,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(15))
+                        alignment: Alignment.center,
+                        child: Text(similarInterests[index]),
+                          decoration: BoxDecoration(
+                          color: Colors.black,
+                          border: Border.all(
+                            color: Colors.amber,
+                          width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(15))
 
                         ),
                       );
-                    }),
-              ),
-            ],
-          ),
+                    }
+                  ),
+                ),
+                  RoundedButton(
+                      text: 'Start a chat',
+                      onPressed: () {
+                        if(!element.isOnline){
+                          final snackBar = SnackBar(
+                            content: const Text('User is not Online',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: kFontFamily,
+
+                            ),),
+                            action: SnackBarAction(
+                              label: 'gotcha',
+                              onPressed: () {
+                                // Some code to undo the change.
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      }
+                      ),
+                ],
+                ),
+      ),
+
+
+
+
+        ],
         ),
-      ));
+      )));
       cards.add(card);
     });
     return cards;
   }
 
   Future<List<AppUser>?> loadPeople(String? myUserId) async {
-    Function sorting = const DeepCollectionEquality.unordered().equals;
+
     print('load people');
     _ignoreSwipeIds = <String>[];
     if (_ignoreSwipeIds.isEmpty) {
@@ -169,7 +268,8 @@ class _ConvoScreenState extends State<ConvoScreen> {
                 builder: (context, users){
                   return ListView(
                     // physics: const AlwaysScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
+                    physics: const PageScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
                     children: buildUserList(users),
                   );
 
