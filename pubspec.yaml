@@ -29,6 +29,8 @@ dependencies:
   csc_picker: ^0.2.6
   collection: ^1.15.0
   blur: ^3.1.0
+  quiver: ^3.0.1+1
+  slide_countdown_clock: ^1.0.3
 
 dev_dependencies:
   flutter_test:

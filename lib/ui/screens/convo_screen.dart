@@ -1,34 +1,30 @@
 
 import 'dart:collection';
+
 import 'dart:ui';
 
-import 'package:collection/collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tinder_app_flutter/data/db/entity/match_chat.dart';
+import 'package:tinder_app_flutter/data/model/constants.dart';
 import 'package:tinder_app_flutter/data/provider/user_provider.dart';
+import 'package:tinder_app_flutter/ui/screens/top_navigation_screens/chats_screen.dart';
 
 import '../../data/db/entity/app_user.dart';
 import '../../data/db/entity/swipe.dart';
 import '../../data/db/remote/firebase_database_source.dart';
 import '../../util/constants.dart';
 import '../widgets/rounded_button.dart';
-import '../widgets/rounded_icon_button.dart';
+import 'chat_screen_match.dart';
+
 
 class ConvoScreen extends StatefulWidget {
   ConvoScreen({Key? key}) : super(key: key);
 
-  final FirebaseDatabaseSource _databaseSource = FirebaseDatabaseSource();
-
-
-
   @override
   _ConvoScreenState createState() => _ConvoScreenState();
 }
-
-
-
-
 
 class _ConvoScreenState extends State<ConvoScreen> {
 
@@ -45,13 +41,14 @@ class _ConvoScreenState extends State<ConvoScreen> {
   @override
   void initState() {
     super.initState();
-    String currentId = Provider
-        .of<UserProvider>(context, listen: false)
-        .currentUserId;
-      getMe(currentId);
+    // String currentId = Provider
+    //     .of<UserProvider>(context, listen: false).currentUserId;
+      getMe();
   }
 
-  void getMe(String currentId) async {
+  void getMe() async {
+    AppUser user = await Provider.of<UserProvider>(context, listen: false).user;
+    String currentId = user.id;
     DocumentSnapshot snap = await _databaseSource.getUser(currentId);
     me = AppUser.fromSnapshot(snap);
   }
@@ -163,7 +160,7 @@ class _ConvoScreenState extends State<ConvoScreen> {
                 ),
                   RoundedButton(
                       text: 'Start a chat',
-                      onPressed: () {
+                      onPressed: () async {
                         if(!element.isOnline){
                           final snackBar = SnackBar(
                             content: const Text('User is not Online',
@@ -175,11 +172,26 @@ class _ConvoScreenState extends State<ConvoScreen> {
                             action: SnackBarAction(
                               label: 'gotcha',
                               onPressed: () {
-                                // Some code to undo the change.
+
                               },
                             ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else {
+                          //TODO: push route with my user id and other user id included
+                          matchChatsRef.add({
+                            'myUserId': me.id,
+                            'theirUserId': element.id,
+                          });
+                          QuerySnapshot doc = await matchChatsRef.where('myUserId', isEqualTo: me.id).where('theirUserId', isEqualTo: element.id).get();
+                          DocumentSnapshot d = doc.docs.first;
+                          MatchChat chat = MatchChat.fromDoc(d);
+                          Navigator.pushNamed(context, ChatScreenMatch.id, arguments: {
+                            'matchChatId': chat.id,
+                            'myUserId': chat.myUserId,
+                            'theirUserId': chat.theirUserId,
+                          });
+                          //Navigator.pushNamed(context, routeName)
                         }
                       }
                       ),
@@ -266,13 +278,27 @@ class _ConvoScreenState extends State<ConvoScreen> {
             return FutureBuilder<List<AppUser>?>(
                 future: loadPeople(userSnapshot.data?.id),
                 builder: (context, users){
-                  return ListView(
-                    // physics: const AlwaysScrollableScrollPhysics(),
-                    physics: const PageScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    children: buildUserList(users),
-                  );
 
+                  if(!users.hasData){
+                    return Center(
+                      child: Column(
+                        children: <Widget> [
+                          SizedBox(height: 250,),
+                          Text("No more Users",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                        ],
+                      ),
+                      
+                    );
+                  } else {
+                    return ListView(
+                      // physics: const AlwaysScrollableScrollPhysics(),
+                      physics: const PageScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      children: buildUserList(users),
+                    );
+                  }
                 }
             );
           }

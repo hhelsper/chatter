@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tinder_app_flutter/data/db/entity/app_user.dart';
 import 'package:tinder_app_flutter/data/db/entity/chat.dart';
 import 'package:tinder_app_flutter/data/db/entity/match.dart';
+import 'package:tinder_app_flutter/data/db/entity/match_chat.dart';
 import 'package:tinder_app_flutter/data/db/entity/message.dart';
 import 'package:tinder_app_flutter/data/db/entity/swipe.dart';
+import 'package:tinder_app_flutter/data/model/constants.dart';
+
+import '../entity/match_message.dart';
 
 class FirebaseDatabaseSource {
   final FirebaseFirestore instance = FirebaseFirestore.instance;
@@ -33,7 +37,7 @@ class FirebaseDatabaseSource {
         .add(message!.toMap());
   }
 
-  void addSwipedUser(String userId, Swipe swipe) {
+  void addSwipedUser(String userId, Swipe swipe) async {
     instance
         .collection('users')
         .doc(userId)
@@ -64,13 +68,15 @@ class FirebaseDatabaseSource {
     return instance.collection('users').doc(userId).get();
   }
 
-  Future<DocumentSnapshot> getSwipe(String userId, String swipeId) {
-    return instance
+  Future<DocumentSnapshot> getSwipe(String userId, String swipeId) async {
+    print("get swipe");
+    DocumentSnapshot doc = await instance
         .collection('users')
         .doc(userId)
         .collection('swipes')
         .doc(swipeId)
         .get();
+    return doc;
   }
 
   Future<QuerySnapshot> getMatches(String userId) {
@@ -212,7 +218,40 @@ class FirebaseDatabaseSource {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> observeMatchMessages(String chatId) {
+    return instance
+        .collection('matchChats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
+
   Stream<DocumentSnapshot> observeChat(String chatId) {
     return instance.collection('chats').doc(chatId).snapshots();
   }
+
+  void addMatchChat(String myUserId, String theirUserId) {
+    matchChatsRef.add({
+      'myUserId': myUserId,
+      'theirUserId': theirUserId,
+    }
+    );
+  }
+
+  void sendMatchMessage(String chatId, MatchMessage message){
+    matchChatsRef.doc(chatId).collection('messages').add({
+      'senderId': message.senderId,
+      'text': message.text,
+      'timestamp': message.timestamp,
+    });
+    matchChatsRef.doc(chatId).update({
+      'recentMessage': message.text,
+      'recentSender': message.senderId,
+      'recentTimestamp': Timestamp.now(),
+    });
+  }
+
 }
+
+

@@ -33,6 +33,8 @@ class MatchedScreen extends StatelessWidget {
     AppUser user = await Provider.of<UserProvider>(context, listen: false).user;
 
     Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
     Navigator.pushNamed(context, ChatScreen.id, arguments: {
       "chat_id": compareAndCombineIds(myUserId, otherUserId),
       "user_id": user.id,
@@ -54,6 +56,9 @@ class MatchedScreen extends StatelessWidget {
     // });
 
     Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
+
     // Navigator.pop(context);
   }
 

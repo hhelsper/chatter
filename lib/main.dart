@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tinder_app_flutter/data/provider/user_provider.dart';
+import 'package:tinder_app_flutter/ui/screens/after_match_screen.dart';
 import 'package:tinder_app_flutter/ui/screens/chat_screen.dart';
+import 'package:tinder_app_flutter/ui/screens/chat_screen_match.dart';
 import 'package:tinder_app_flutter/ui/screens/login_screen.dart';
+import 'package:tinder_app_flutter/ui/screens/match_chat_screen.dart';
 import 'package:tinder_app_flutter/ui/screens/matched_screen.dart';
 import 'package:tinder_app_flutter/ui/screens/register_screen.dart';
 import 'package:tinder_app_flutter/ui/screens/splash_screen.dart';
@@ -68,6 +71,20 @@ class MyApp extends StatelessWidget {
           LoginScreen.id: (context) => LoginScreen(),
           RegisterScreen.id: (context) => RegisterScreen(),
           TopNavigationScreen.id: (context) => TopNavigationScreen(),
+          AfterMatchScreen.id: (context) => AfterMatchScreen(
+              myUserId: (ModalRoute.of(context)?.settings.arguments
+              as Map)['myUserId'],
+              theirUserId: (ModalRoute.of(context)?.settings.arguments
+              as Map)['theirUserId']
+          ),
+          ChatScreenMatch.id: (context) => ChatScreenMatch(
+              matchChatId: (ModalRoute.of(context)?.settings.arguments
+              as Map)['matchChatId'],
+              myUserId: (ModalRoute.of(context)?.settings.arguments
+              as Map)['myUserId'],
+              theirUserId: (ModalRoute.of(context)?.settings.arguments
+              as Map)['theirUserId']
+          ),
           MatchedScreen.id: (context) => MatchedScreen(
                 myProfilePhotoPath: (ModalRoute.of(context)?.settings.arguments
                     as Map)['my_profile_photo_path'],
