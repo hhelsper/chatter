@@ -48,8 +48,9 @@ class _ConvoScreenState extends State<ConvoScreen> {
 
   void getMe() async {
     AppUser user = await Provider.of<UserProvider>(context, listen: false).user;
-    String currentId = user.id;
-    DocumentSnapshot snap = await _databaseSource.getUser(currentId);
+    Provider.of<UserProvider>(context, listen: false).currentUserId = user.id;
+    // String currentId = user.id;
+    DocumentSnapshot snap = await _databaseSource.getUser(Provider.of<UserProvider>(context, listen: false).currentUserId);
     me = AppUser.fromSnapshot(snap);
   }
 

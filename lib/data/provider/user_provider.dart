@@ -130,6 +130,7 @@ class UserProvider extends ChangeNotifier {
 
     for (var i = 0; i < matches.docs.length; i++) {
 
+      print("length length " + matches.docs.length.toString());
       // print("in for loop ");
       Match match = Match.fromSnapshot(matches.docs[i]);
       AppUser matchedUser =
