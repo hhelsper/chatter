@@ -280,7 +280,7 @@ class _ConvoScreenState extends State<ConvoScreen> {
                 future: loadPeople(userSnapshot.data?.id),
                 builder: (context, users){
 
-                  if(!users.hasData){
+                  if(users.data?.length == 0){
                     return Center(
                       child: Column(
                         children: <Widget> [
@@ -292,7 +292,7 @@ class _ConvoScreenState extends State<ConvoScreen> {
                       ),
                       
                     );
-                  } else {
+                  }
                     return ListView(
                       // physics: const AlwaysScrollableScrollPhysics(),
                       physics: const PageScrollPhysics(),
@@ -300,7 +300,7 @@ class _ConvoScreenState extends State<ConvoScreen> {
                       children: buildUserList(users),
                     );
                   }
-                }
+
             );
           }
           );
