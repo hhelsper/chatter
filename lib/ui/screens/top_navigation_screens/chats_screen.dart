@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinder_app_flutter/data/db/entity/app_user.dart';
@@ -9,6 +8,12 @@ import 'package:tinder_app_flutter/ui/widgets/chats_list.dart';
 import 'package:tinder_app_flutter/ui/widgets/custom_modal_progress_hud.dart';
 
 class ChatsScreen extends StatefulWidget {
+  final String? payload;
+
+  const ChatsScreen({
+    Key? key,
+    required this.payload,
+  }) : super(key: key);
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
@@ -44,7 +49,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
               builder: (context, userSnapshot) {
                 return CustomModalProgressHUD(
                   inAsyncCall:
-                      userProvider.user == null || userProvider.isLoading,
+                      userProvider.isLoading,
                   child: (userSnapshot.hasData)
                       ? FutureBuilder<List<ChatWithUser>>(
                           future: userProvider

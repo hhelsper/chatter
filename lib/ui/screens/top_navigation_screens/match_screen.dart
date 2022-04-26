@@ -30,7 +30,6 @@ class _MatchScreenState extends State<MatchScreen> {
     print("Ignore swipe ids: ");
     _ignoreSwipeIds = <String>[];
     if (_ignoreSwipeIds.isEmpty) {
-      print("Made it!");
       preference = await _databaseSource.getPreference(myUserId!);
       gender = await _databaseSource.getGender(myUserId);
       var swipes = await _databaseSource.getSwipes(myUserId);

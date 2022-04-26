@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tinder_app_flutter/data/model/chat_with_user.dart';
 import 'package:tinder_app_flutter/data/model/chats_observer.dart';
+import 'package:tinder_app_flutter/ui/screens/top_navigation_screens/chats_screen.dart';
 import 'package:tinder_app_flutter/ui/widgets/chat_list_tile.dart';
+
+import '../../api/notification_api.dart';
 
 class ChatsList extends StatefulWidget {
   final List<ChatWithUser> chatWithUserList;
@@ -26,7 +29,18 @@ class _ChatsListState extends State<ChatsList> {
     _chatsObserver = ChatsObserver(widget.chatWithUserList);
     print("here");
     _chatsObserver.startObservers(chatUpdated);
+    //push notification feature
+    NotificationApi.init();
+    listenNotifications();
   }
+
+  void listenNotifications() {
+    NotificationApi.onNotifications.stream.listen(onClickedNotification);
+  }
+
+  void onClickedNotification(String? payload) =>
+  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatsScreen(payload: payload,),
+  ));
 
   @mustCallSuper
   @protected
